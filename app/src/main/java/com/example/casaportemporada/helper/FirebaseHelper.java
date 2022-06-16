@@ -49,4 +49,7 @@ public class FirebaseHelper {
     }
 
 
+    public static boolean getAutenticado(){
+        return getAuth().getCurrentUser() != null;
+    }
 }

@@ -12,11 +12,20 @@ public class Anuncio {
     private String banheiro;
     private String garagem;
     private boolean status;
+    private String urlImg;
 
 
     public Anuncio() {
         DatabaseReference reference = FirebaseHelper.getDatabaseReference();
         this.setId(reference.push().getKey());
+    }
+
+    public void save(){
+        DatabaseReference reference = FirebaseHelper.getDatabaseReference()
+                .child("anuncios")
+                .child(FirebaseHelper.getIdFirebase())
+                .child(this.getId());
+        reference.setValue(this);
     }
 
     public String getId() {
@@ -75,5 +84,11 @@ public class Anuncio {
         this.status = status;
     }
 
+    public String getUrlImg() {
+        return urlImg;
+    }
 
+    public void setUrlImg(String urlImg) {
+        this.urlImg = urlImg;
+    }
 }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.casaportemporada">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -16,14 +16,17 @@
         android:theme="@style/Theme.CasaPorTemporada"
         tools:targetApi="31">
         <activity
+            android:name=".activity.MinhaContaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MeusAnunciosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.FiltrarAnunciosActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.FormAnuncioActivity"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".activity.authentication.RecuperarContaActivity"
             android:exported="false" />
@@ -32,12 +35,16 @@
             android:exported="false" />
         <activity
             android:name=".activity.authentication.LoginActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".activity.MainActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
