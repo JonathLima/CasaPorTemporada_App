@@ -16,6 +16,10 @@
         android:theme="@style/Theme.CasaPorTemporada"
         tools:targetApi="31">
         <activity
+            android:name=".activity.DetalheAnuncioActivity"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".activity.MinhaContaActivity"
             android:exported="false" />
         <activity

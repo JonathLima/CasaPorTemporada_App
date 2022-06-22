@@ -21,9 +21,11 @@ import java.util.List;
 public class AdapterAnuncios extends RecyclerView.Adapter<AdapterAnuncios.MyViewHolder> {
 
     private List<Anuncio> anuncioList;
+    private OnClick onClick;
 
-    public AdapterAnuncios(List<Anuncio> anuncioList) {
+    public AdapterAnuncios(List<Anuncio> anuncioList, OnClick onClick) {
         this.anuncioList = anuncioList;
+        this.onClick = onClick;
     }
 
     @NonNull
@@ -31,6 +33,10 @@ public class AdapterAnuncios extends RecyclerView.Adapter<AdapterAnuncios.MyView
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_anuncio, parent, false);
         return new MyViewHolder(view);
+    }
+
+    public interface OnClick {
+        public void OnClickListener(Anuncio anuncio);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -41,6 +47,10 @@ public class AdapterAnuncios extends RecyclerView.Adapter<AdapterAnuncios.MyView
         holder.text_tituto.setText(anuncio.getTitulo());
         holder.text_descricao.setText(anuncio.getDescricao());
         holder.text_data.setText(LocalDateTime.now().toString());
+
+        holder.itemView.setOnClickListener(view ->{
+            onClick.OnClickListener(anuncio);
+        });
     }
 
     @Override

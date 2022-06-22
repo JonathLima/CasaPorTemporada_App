@@ -25,19 +25,13 @@ import android.widget.Toast;
 import com.example.casaportemporada.R;
 import com.example.casaportemporada.helper.FirebaseHelper;
 import com.example.casaportemporada.model.Anuncio;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.security.Permission;
 import java.util.List;
 
 public class FormAnuncioActivity extends AppCompatActivity {
@@ -63,7 +57,28 @@ public class FormAnuncioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_form_anuncio);
 
         startComponents();
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            anuncio = (Anuncio) bundle.getSerializable("anuncio");
+
+            configDados();
+
+        } else {
+
+        }
+
         configClick();
+    }
+
+    private void configDados() {
+        Picasso.get().load(anuncio.getUrlImg()).into(img_anuncio);
+        edit_titulo_anuncio.setText(anuncio.getTitulo());
+        edit_descricao_anuncio.setText(anuncio.getDescricao());
+        edit_quarto_anuncio.setText(anuncio.getQuarto());
+        edit_banheiro_anuncio.setText(anuncio.getBanheiro());
+        edit_garagem_anuncio.setText(anuncio.getGaragem());
+        cb_disponivel.setChecked(anuncio.isStatus());
     }
 
     private void openGallery() {
@@ -113,8 +128,8 @@ public class FormAnuncioActivity extends AppCompatActivity {
                     if (!banheiro.isEmpty()) {
                         if (!garagem.isEmpty()) {
 
-                            if(anuncio == null) anuncio = new Anuncio();
-
+                            if (anuncio == null) anuncio = new Anuncio();
+                            anuncio.setUserId(FirebaseHelper.getIdFirebase());
                             anuncio.setTitulo(titulo);
                             anuncio.setDescricao(descricao);
                             anuncio.setQuarto(quarto);
@@ -123,11 +138,14 @@ public class FormAnuncioActivity extends AppCompatActivity {
                             anuncio.setStatus(cb_disponivel.isChecked());
 
                             if(pathImg != null){
-                                progressBar.setVisibility(View.VISIBLE);
                                 saveImgAnuncio();
                             }else{
-                                Toast.makeText(this, "Selecione uma imagem para o anúncio", Toast.LENGTH_SHORT).show();
-                                progressBar.setVisibility(View.GONE);
+                                if(anuncio.getUrlImg() != null){
+                                    anuncio.save();
+                                    finish();
+                                }else{
+                                    Toast.makeText(this, "Selecione uma imagem para o anúncio", Toast.LENGTH_SHORT).show();
+                                }
                             }
 
 
@@ -155,7 +173,10 @@ public class FormAnuncioActivity extends AppCompatActivity {
 
     }
 
-    private void saveImgAnuncio(){
+    private void saveImgAnuncio() {
+
+        progressBar.setVisibility(View.VISIBLE);
+
         StorageReference storageReference = FirebaseHelper.getStorageReference()
                 .child("images")
                 .child("anuncios")
@@ -168,18 +189,17 @@ public class FormAnuncioActivity extends AppCompatActivity {
                 String urlImg = task.getResult().toString();
                 anuncio.setUrlImg(urlImg);
                 anuncio.save();
-
                 finish();
-                startActivity(new Intent(this, MainActivity.class));
             });
-        }).addOnFailureListener(e ->{
+        }).addOnFailureListener(e -> {
+            progressBar.setVisibility(View.GONE);
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
 
     private void configClick() {
         findViewById(R.id.ib_voltar).setOnClickListener(view -> {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, MeusAnunciosActivity.class);
             startActivity(intent);
 
         });
@@ -193,9 +213,9 @@ public class FormAnuncioActivity extends AppCompatActivity {
         text_titulo.setText("Anúncio");
         edit_titulo_anuncio = findViewById(R.id.edit_titulo_anuncio);
         edit_descricao_anuncio = findViewById(R.id.edit_descricao_anuncio);
-        edit_quarto_anuncio = findViewById(R.id.edit_quarto_anuncio);
-        edit_banheiro_anuncio = findViewById(R.id.edit_banheiro_anuncio);
-        edit_garagem_anuncio = findViewById(R.id.edit_garagem_anuncio);
+        edit_quarto_anuncio = findViewById(R.id.edit_quarto_detail_anuncio);
+        edit_banheiro_anuncio = findViewById(R.id.edit_banheiro_detail_anuncio);
+        edit_garagem_anuncio = findViewById(R.id.edit_garagem_detail_anuncio);
         progressBar = findViewById(R.id.progressBar);
         cb_disponivel = findViewById(R.id.cb_disponivel);
         img_anuncio = findViewById(R.id.img_anuncio);
